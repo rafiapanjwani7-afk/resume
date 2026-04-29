@@ -1,22 +1,96 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>your resume</title>
-     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>resume Templates</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="templates.css">
 </head>
 <body>
-    <div class="container">
-        <div class="col-md-6 p-5 bg-light">
-            <div id="templateSelector"></div>
-            <div id="resumeContainer"></div>
-        </div>
+
+    <h1 style="text-align:center;margin-bottom:20px;">
+        Choose Your resume Template
+    </h1>
+
+    <!-- TEMPLATE BUTTONS -->
+    <div class="template-selector">
+        <button onclick="loadTemplate('template1')">Corporate</button>
+        <button onclick="loadTemplate('template2')">Dark</button>
+        <button onclick="loadTemplate('template3')">Minimal</button>
     </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="app.js"></script> 
+
+    <!-- ===== CV PREVIEW ===== -->
+    <div id="cvPreview" class="cv-template template1">
+
+        <!-- LEFT SIDE -->
+        <aside class="cv-left">
+
+            <div class="profile-pic">
+                <img id="cvImage" src="" alt="Profile Image">
+            </div>
+
+            <div class="left-section">
+                <h4>CONTACT</h4>
+                <p><i class="fa fa-phone"></i> <span id="cvPhone">+92 300 1234567</span></p>
+                <p><i class="fa fa-envelope"></i> <span id="cvEmail">email@example.com</span></p>
+            </div>
+
+            <div class="left-section">
+                <h4>EDUCATION</h4>
+                <p id="cvEducation">Your education here</p>
+            </div>
+
+            <div class="left-section">
+                <h4>SKILLS</h4>
+                <ul id="cvSkills">
+                    <li>HTML</li>
+                    <li>CSS</li>
+                    <li>JavaScript</li>
+                </ul>
+            </div>
+
+            <div class="left-section">
+                <h4>LANGUAGES</h4>
+                <ul id="cvLanguages">
+                    <li>English</li>
+                    <li>Urdu</li>
+                </ul>
+            </div>
+
+        </aside>
+
+        <!-- RIGHT SIDE -->
+        <main class="cv-right">
+
+            <h1 id="cvName">Your Name</h1>
+            <h3 id="cvTitle">Professional Title</h3>
+
+            <section>
+                <h2> professional summary</h2>
+                <p id="cvAbout">
+                    Short professional summary goes here.
+                </p>
+            </section>
+
+            <section>
+                <h2>WORK EXPERIENCE</h2>
+                <p id="cvExperience">
+                    Your work experience details here.
+                </p>
+            </section>
+
+        </main>
+
+    </div>
+
+    <br>
+
+    <button id="previewBtn" type="button" class="text-center" class="btn-gradient"  ><a href="../resume.html"></a>Preview</button>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="app.js"></script>
+
 </body>
 </html>

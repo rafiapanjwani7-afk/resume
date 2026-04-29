@@ -1,36 +1,41 @@
 function signup() {
-    var name = document.getElementById("username").value;
-    var email = document.getElementById("email").value;
-    var password = document.getElementById("password").value;
-    var phone = document.getElementById("phone").value;
-    var cnic = document.getElementById("cnic").value;
-
+    var name = document.getElementById("username").value.trim();
+    var email = document.getElementById("email").value.trim();
+    var password = document.getElementById("password").value.trim();
     var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     var passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
-    var phoneRegex = /^03\d{9}$/;
-    var cnicRegex = /^\d{5}-\d{7}-\d{1}$/;
-
     var users = JSON.parse(localStorage.getItem("userdata")) || [];
 
-    if (!name || !email || !password || !phone || !cnic) {
-        alert("All fields are required!");
+    if (!name || !email || !password ) {
+        Swal.fire("Error", "All fields are required!", "error");
         return;
     }
 
-    if (!emailRegex.test(email)) return alert("Invalid Email!");
-    if (!passwordRegex.test(password)) return alert("Weak Password!");
-    if (!phoneRegex.test(phone)) return alert("Invalid Phone Number!");
-    if (!cnicRegex.test(cnic)) return alert("Invalid CNIC!");
+     if (!emailRegex.test(email)) {
+        Swal.fire("Error", "Invalid Email!", "error");
+        return;
+    }
 
-    var exist = users.some(user => user.email === email);
+    if (!passwordRegex.test(password)) {
+        Swal.fire(
+            "Weak Password",
+            "Password must be 8+ chars, include uppercase, lowercase, number & special character",
+            "warning"
+        );
+        return;
+    }
+
+   var exist = users.some(user => user.email.toLowerCase() === email.toLowerCase());
 
     if (exist) {
         Swal.fire("Warning", "Email already exists!", "warning");
         return;
     }
-
-    var userdata = { name, email, password, phone, cnic };
-
+    var userdata = {
+        name: name,
+        email: email,
+        password: password
+    }
     users.push(userdata);
     localStorage.setItem("userdata", JSON.stringify(users));
 
@@ -40,25 +45,47 @@ function signup() {
 function login() {
     var email = document.getElementById("loginEmail").value.trim();
     var password = document.getElementById("loginPassword").value.trim();
-
     var users = JSON.parse(localStorage.getItem("userdata")) || [];
 
     if (!email || !password) {
         Swal.fire("Error", "Please enter email and password", "error");
         return;
     }
-
-    var userData = users.find(u => u.email === email && u.password === password);
+    var userData = users.find(function (user) {
+    return user.email.toLowerCase() === email.toLowerCase() && user.password === password;
+});
 
     if (userData) {
         localStorage.setItem("currentUser", JSON.stringify(userData));
 
-        Swal.fire("Success", "Login successful!", "success")
-            .then(() => window.location.href = "resume.html");
+         Swal.fire({
+            icon: "success",
+            title: "Login Successful!",
+            text: "Welcome back " + userData.name
+        }).then(() => {
+            window.location.href="cv.html"
+        });
     } else {
-        Swal.fire("Error", "Invalid email or password", "error");
+        Swal.fire({
+            icon: "error",
+            title: "Invalid Login",
+            text: "Email or password is incorrect"
+        });
     }
 }
+document.addEventListener("DOMContentLoaded", function () {
+    var createBtn = document.querySelector(".btn-create");
+    if (createBtn) {
+        createBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+           if (!localStorage.getItem("currentUser")) {
+        window.location.href = "login.html";
+        return;
+    }
+            window.location.href = "resume.html";
+        });
+    }
+});
 function logout() {
     Swal.fire({
         title: "Are you sure you want to log out?",
@@ -73,155 +100,158 @@ function logout() {
         }
     });
 }
+//----resume-----//
+var languages = [];
 
-function renderResume(data) {
-    var container = document.getElementById("resumeContainer");
-    container.innerHTML = `
-    <div id="resume" class="p-4 bg-white shadow rounded">
+var langInput = document.getElementById("language");
+var langContainer = document.getElementById("languages-container");
 
-      <h1>${data.name || ""}</h1>
-      <h4>${data.title || ""}</h4>
-      <p>${data.email || ""} | ${data.phone || ""}</p>
+if (langInput) {
+    langInput.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
 
-      <hr>
-
-      <h5>Summary</h5>
-      <p>${data.summary || ""}</p>
-
-      <h5>Education</h5>
-      <p>${data.education || ""}</p>
-
-      <h5>Experience</h5>
-      <p>${data.experience || ""}</p>
-
-      <h5>Skills</h5>
-     <p>
-     ${(data.skills || []).map(s => `<span>${s}</span>`).join("")}
-     </p>
-
-    </div>
-  `;
+            var value = this.value.trim();
+            if (value !== "") {
+                languages.push(value);
+                this.value = "";
+                showLanguages();
+            }
+        }
+    });
 }
-function saveResume() {
-    var currentUser = JSON.parse(localStorage.getItem("currentUser"));
-    if (!currentUser) return;
 
-    var data = {
-        name: document.getElementById("name").value,
-        title: document.getElementById("title").value,
-        email: document.getElementById("email").value,
-        phone: document.getElementById("phone").value,
-        summary: document.getElementById("summary").value,
-        education: document.getElementById("education").value,
-        experience: document.getElementById("experience").value,
-        skills: document.getElementById("skills").value.split(",").map(s => s.trim())
-    };
+function showLanguages() {
+    if (!langContainer) return;
 
-    localStorage.setItem("resumeData", JSON.stringify(data));
+    langContainer.innerHTML = "";
 
-    renderResume(data);
+    languages.forEach(function (l, index) {
+        var span = document.createElement("span");
+        span.className = "badge bg-primary me-2";
+        span.innerHTML = l;
 
-    Swal.fire("Saved", "Resume generated!", "success");
+        langContainer.appendChild(span);
+    });
 }
-function autoSave() {
-    var currentUser = JSON.parse(localStorage.getItem("currentUser"));
-    if (!currentUser) return;
+     var imageInput = document.getElementById("imgInput");
+var previewImg = document.getElementById("previewImg");
 
-    var data = {
-        name: document.getElementById("name").value,
-        title: document.getElementById("title").value,
-        email: document.getElementById("email").value,
-        phone: document.getElementById("phone").value,
-        summary: document.getElementById("summary").value,
-        education: document.getElementById("education").value,
-        experience: document.getElementById("experience").value,
-        skills: document.getElementById("skills").value.split(",").map(s => s.trim())
-    };
+if (imageInput && previewImg) {
 
-    localStorage.setItem("resumeData", JSON.stringify(data));
- window.location.href = "template.html";
-    renderResume(data);
+    imageInput.addEventListener("change", function () {
+
+        var file = this.files[0];
+
+        if (!file) return;
+
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+
+            previewImg.src = e.target.result;
+            previewImg.style.display = "block";
+
+            // SAVE IMAGE ALSO
+            localStorage.setItem("cvImage", e.target.result);
+        };
+
+        reader.readAsDataURL(file);
+    });
 }
-window.onload = function () {
-    var data = JSON.parse(localStorage.getItem("resumeData"));
+var cvForm = document.getElementById("cvForm");
 
-    if (data) {
-        document.getElementById("name").value = data.name || "";
-        document.getElementById("title").value = data.title || "";
-        document.getElementById("email").value = data.email || "";
-        document.getElementById("phone").value = data.phone || "";
-        document.getElementById("summary").value = data.summary || "";
-        document.getElementById("education").value = data.education || "";
-        document.getElementById("experience").value = data.experience || "";
-        document.getElementById("skills").value = (data.skills || []).join(",");
+if (cvForm) {
+    cvForm.addEventListener("submit", function (e) {
+        e.preventDefault();
 
-        renderResume(data);
+        var cvData = {
+            name: document.getElementById("name").value.trim(),
+            email: document.getElementById("email").value.trim(),
+            phone: document.getElementById("phone").value.trim(),
+            summary: document.getElementById("summary").value.trim(),
+            education: document.getElementById("education").value.trim(),
+            experience: document.getElementById("experience").value.trim(),
+            skills: document.getElementById("skills").value.trim(),
+            languages: languages,
+            image: localStorage.getItem("cvImage") // 👈 IMPORTANT
+        };
+
+        localStorage.setItem("cvData", JSON.stringify(cvData));
+
+        window.location.href = "template.html";
+    });
+}
+//---template ---//
+document.addEventListener("DOMContentLoaded", function () {
+
+    var cvData = JSON.parse(localStorage.getItem("cvData")) || {};
+
+   var cvData = JSON.parse(localStorage.getItem("cvData"));
+
+    var img = document.getElementById("cvImage");
+
+    if (cvData && cvData.image && img) {
+        img.src = cvData.image;
+        img.style.display = "block";
     }
-};
-var data = JSON.parse(localStorage.getItem("resumeData"));
+    if (document.getElementById("cvName"))
+        document.getElementById("cvName").textContent = cvData.name || "Your Name";
 
-if (data) {
-    document.getElementById("namePreview").innerText = data.name || "";
-    document.getElementById("titlePreview").innerText = data.title || "";
-    document.getElementById("contactPreview").innerText =
-        (data.email || "") + " | " + (data.phone || "");
+    if (document.getElementById("cvEmail"))
+        document.getElementById("cvEmail").textContent = cvData.email || "";
 
-    document.getElementById("summaryPreview").innerText = data.summary || "";
-    document.getElementById("educationPreview").innerText = data.education || "";
-    document.getElementById("experiencePreview").innerText = data.experience || "";
+    if (document.getElementById("cvPhone"))
+        document.getElementById("cvPhone").textContent = cvData.phone || "";
 
-    document.getElementById("skillsPreview").innerHTML =
-        (data.skills || []).map(s => `• ${s}`).join("<br>");
+    if (document.getElementById("cvAbout"))
+        document.getElementById("cvAbout").textContent = cvData.summary || "";
+
+    if (document.getElementById("cvEducation"))
+        document.getElementById("cvEducation").textContent = cvData.education || "";
+
+    if (document.getElementById("cvExperience"))
+        document.getElementById("cvExperience").textContent = cvData.experience || "";
+
+  var skillsBox = document.getElementById("cvSkills");
+    if (skillsBox) {
+        skillsBox.innerHTML = "";
+        var skills = cvData.skills ? cvData.skills.split(",") : [];
+
+        skills.forEach(function (s) {
+            var li = document.createElement("li");
+            li.textContent = s.trim();
+            skillsBox.appendChild(li);
+        });
+    }
+    
+    var langBox = document.getElementById("cvLanguages");
+    if (langBox) {
+        langBox.innerHTML = "";
+
+        var langs = cvData.languages || [];
+
+        langs.forEach(function (l) {
+            var li = document.createElement("li");
+            li.textContent = l;
+            langBox.appendChild(li);
+        });
+    }
+
+});
+function loadTemplate(templateName) {
+  const preview = document.getElementById("cvPreview");
+  if (!preview) return;
+
+  preview.className = `cv-template ${templateName}`;
+  localStorage.setItem("selectedTemplate", templateName);
 }
-function updatePreview() {
-   
-    document.getElementById("namePreview").innerText =
-        document.getElementById("name").value;
 
-    document.getElementById("titlePreview").innerText =
-        document.getElementById("title").value;
 
-    document.getElementById("contactPreview").innerText =
-        document.getElementById("email").value +
-        " | " +
-        document.getElementById("phone").value;
-
-    document.getElementById("summaryPreview").innerText =
-        document.getElementById("summary").value;
-
-    document.getElementById("educationPreview").innerText =
-        document.getElementById("education").value;
-
-    document.getElementById("experiencePreview").innerText =
-        document.getElementById("experience").value;
-
-    document.getElementById("skillsPreview").innerHTML =
-        document.getElementById("skills").value
-            .split(",")
-            .map(s => "• " + s.trim())
-            .join("<br>");
-}function loadTemplateSelector() {
-    var container = document.getElementById("templateSelector");
-
-    var select = document.createElement("select");
-    select.className = "form-control mb-3";
-
-    var templates = [
-        { value: "modern", text: "Modern" },
-        { value: "classic", text: "Classic" },
-        { value: "creative", text: "Creative" }
-    ];
-
-    templates.forEach(t => {
-        var option = document.createElement("option");
-        option.value = t.value;
-        option.textContent = t.text;
-        select.appendChild(option);
-    });
-
-    select.addEventListener("change", function () {
-        setTemplate(this.value);
-    });
-
-    container.appendChild(select);
+// ========================
+// ACCENT COLOR
+// ========================
+function applyColor(color) {
+  document.documentElement.style.setProperty("--accent", color);
+  localStorage.setItem("accentColor", color);
 }

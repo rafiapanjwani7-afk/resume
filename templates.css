@@ -1,0 +1,215 @@
+:root {
+  --accent: #2563eb;
+  --accent-dark: #1e3a8a;
+  --text: #222;
+  --bg: linear-gradient(135deg, #e9f0f7, #f7fafc);
+}
+
+body {
+  background: var(--bg);
+  font-family: "Segoe UI", sans-serif;
+  padding: 30px;
+  color: var(--text);
+}
+
+/* ===== CARD ===== */
+.cv-template {
+  max-width: 950px;
+  margin: auto;
+  background: #fff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+  transition: 0.3s;
+}
+
+.cv-template:hover {
+  transform: translateY(-5px);
+}
+
+/* ===== GRID ===== */
+.template1,
+.template2,
+.template3 {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+}
+
+/* ===== LEFT ===== */
+.cv-left {
+  padding: 30px;
+  background: linear-gradient(135deg, #153a5b, #0f2a40);
+  color: #fff;
+}
+
+.profile-pic img {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #fff;
+  display: block;
+  margin: auto;
+}
+
+.left-section {
+  background: rgba(255,255,255,0.12);
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  transition: 0.3s;
+}
+
+.left-section:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* ===== RIGHT ===== */
+.cv-right {
+  padding: 40px;
+  background: #fff;
+  color: #222;
+}
+
+.cv-right h1 {
+  font-size: 32px;
+  color: #111;
+}
+
+.cv-right h3 {
+  margin-top: 20px;
+  border-left: 5px solid var(--accent);
+  padding-left: 10px;
+  color: #444;
+}
+
+.cv-right section {
+  background: #f9fafb;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 12px;
+  transition: 0.3s;
+}
+
+.cv-right section:hover {
+  transform: translateY(-3px);
+}
+
+/* ===== TEMPLATE 2 ===== */
+.template2 .cv-left {
+  background: #2b2b2b;
+}
+
+.template2 .cv-right {
+  background: #1e1e1e;
+  color: #eee;
+}
+
+.template2 .cv-right section {
+  background: #2a2a2a;
+}
+
+/* ===== TEMPLATE 3 ===== */
+.template3 .cv-left {
+  background: #f2f2f2;
+  color: #000;
+}
+
+.template3 .cv-right {
+  background: #fff;
+}
+
+/* ===== BUTTONS ===== */
+.template-selector {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.template-selector button {
+  padding: 12px 25px;
+  margin: 5px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #153a5b, #0f2a40);
+  color: #fff;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.template-selector button:hover {
+  transform: scale(1.05);
+}
+
+/* ===== PREVIEW ===== */
+#previewBtn {
+  padding: 12px 30px;
+  background: linear-gradient(135deg, var(--accent), #60a5fa);
+  color: #fff;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#previewBtn:hover {
+  transform: translateY(-3px);
+}
+.template2 .cv-left {
+  background: linear-gradient(135deg, #111827, #1f2937);
+  color: #e5e7eb;
+}
+
+.template2 .cv-right {
+  background: #0f172a;
+  color: #e5e7eb;
+}
+
+/* sections */
+.template2 .cv-right section {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: #e5e7eb;
+}
+
+/* headings */
+.template2 h3 {
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+.template2 h1{
+    color: #f2f2f2;
+}
+/* LEFT SECTION */
+.template2 .left-section {
+  background: rgba(255,255,255,0.08);
+}
+
+/* ===== REMOVE LIST BULLETS ===== */
+.cv-left ul,
+.cv-right ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.cv-left li,
+.cv-right li {
+  margin: 6px 0;
+}
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .template1,
+  .template2,
+  .template3 {
+    grid-template-columns: 1fr;
+  }
+
+  .cv-left {
+    text-align: center;
+  }
+
+  .profile-pic img {
+    margin: auto;
+  }
+}
